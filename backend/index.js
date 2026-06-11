@@ -28,8 +28,19 @@ const app = express();
 
 app.use(helmet());
 app.use(compression());
+const allowedOrigins = process.env.CORS_ORIGINS?.split(",") || ["http://localhost:5173"];
+
 app.use(cors({
-  origin: process.env.CORS_ORIGINS?.split(",") || ["http://localhost:5173"],
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+      return callback(null, true);
+    }
+    
+    callback(null, false); // Block other origins gracefully instead of crashing
+  },
   credentials: true,
 }));
 
