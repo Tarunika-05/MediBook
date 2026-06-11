@@ -44,3 +44,4 @@ mcp_config.json
 *.png
 *.jpg
 *.jpeg
+.vercel/
