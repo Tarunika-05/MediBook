@@ -1,0 +1,108 @@
+openapi: 3.0.0
+info:
+  title: MediBook Doctor Appointment API
+  description: API for booking and managing doctor appointments
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+    description: Local development server
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: refreshToken
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - role
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+                  enum: [PATIENT, DOCTOR]
+      responses:
+        '201':
+          description: Created
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /doctors:
+    get:
+      summary: Get list of doctors
+      responses:
+        '200':
+          description: OK
+  /appointments:
+    get:
+      summary: Get user appointments
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Book an appointment
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - slotId
+              properties:
+                slotId:
+                  type: integer
+      responses:
+        '201':
+          description: Created
+  /appointments/{id}/cancel:
+    put:
+      summary: Cancel an appointment
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Cancelled successfully
