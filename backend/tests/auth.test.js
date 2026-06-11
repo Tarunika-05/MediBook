@@ -21,9 +21,10 @@ describe("Authentication", () => {
       });
 
     expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty("accessToken");
-    expect(res.body.role).toBe("PATIENT");
-    expect(res.body.email).toBe(testEmail);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty("token");
+    expect(res.body.data.user.role).toBe("PATIENT");
+    expect(res.body.data.user.email).toBe(testEmail);
   });
 
   it("should reject duplicate registration", async () => {
@@ -46,8 +47,9 @@ describe("Authentication", () => {
       .send({ email: testEmail, password: "password123" });
 
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("accessToken");
-    expect(res.body.email).toBe(testEmail);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty("token");
+    expect(res.body.data.user.email).toBe(testEmail);
   });
 
   it("should reject invalid credentials", async () => {
